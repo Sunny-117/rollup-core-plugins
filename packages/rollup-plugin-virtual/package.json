@@ -25,9 +25,12 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup"
+    "dev": "tsup --watch",
+    "build": "tsup --minify"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "rollup": "^4.17.2"
+  },
   "engines": {
     "node": ">=14.19.0"
   }

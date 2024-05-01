@@ -1,6 +1,7 @@
 import { defineConfig } from 'rollup'
 import virtualModule from '@rps/rollup-plugin-virtual'
-// import json from '@rps/rollup-plugin-json'
+import json from '@rps/rollup-plugin-json'
+import customPlugin from '@rps/rollup-plugin-custom'
 
 export default defineConfig({
   input: 'src/index.js',
@@ -13,9 +14,10 @@ export default defineConfig({
     virtualModule({
       content: 'export default () => "Hello, world!"',
     }),
-    // json(), // https://github.com/evanw/esbuild/issues/3324
-    // customPlugin({
-    //   emitFile: true,
-    // }),
+    // tsup: https://github.com/evanw/esbuild/issues/3324
+    json(),
+    customPlugin({
+      emitFile: true,
+    }),
   ],
 })

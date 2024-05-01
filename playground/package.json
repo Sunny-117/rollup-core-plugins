@@ -13,6 +13,7 @@
     "rollup": "^3.29.3"
   },
   "dependencies": {
+    "@rps/rollup-plugin-custom": "workspace:^0.0.0",
     "@rps/rollup-plugin-json": "workspace:^0.0.0",
     "@rps/rollup-plugin-virtual": "workspace:^0.0.0"
   }

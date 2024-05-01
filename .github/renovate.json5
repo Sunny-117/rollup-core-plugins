@@ -1,0 +1,3 @@
+{
+  extends: ['github>Sunny-117/renovate-config'],
+}

@@ -38,19 +38,29 @@ importers:
       unbuild: 2.0.0_typescript@5.2.2
       vitest: 0.34.3
 
+  example:
+    specifiers:
+      '@rollup/pluginutils': ^5.0.4
+      mini-svg-data-uri: ^1.4.4
+      rollup: ^3.29.3
+    devDependencies:
+      '@rollup/pluginutils': 5.1.0_rollup@3.29.4
+      mini-svg-data-uri: 1.4.4
+      rollup: 3.29.4
+
   packages/custom:
     specifiers:
       unbuild: ^2.0.0
     devDependencies:
       unbuild: 2.0.0_typescript@5.2.2
 
-  packages/rollup-plugin-json:
+  packages/json:
     specifiers:
       '@types/node': ^18.17.12
     devDependencies:
       '@types/node': 18.17.12
 
-  packages/rollup-plugin-virtual:
+  packages/virtual:
     specifiers: {}
 
   playground:
@@ -4345,6 +4355,11 @@ packages:
   /min-indent/1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
+    dev: true
+
+  /mini-svg-data-uri/1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
     dev: true
 
   /minimatch/3.1.2:

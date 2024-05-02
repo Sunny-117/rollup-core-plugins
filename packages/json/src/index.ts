@@ -19,14 +19,14 @@ export default function json(options?: JsonOptions): Plugin {
     transform: {
       order: 'pre',
       handler(code, id) {
-        console.log(id, !filter(id))
+        // console.log(id, !filter(id))
         if (!filter(id) || path.extname(id) !== '.json') {
           return null
         }
 
         try {
           const parse = JSON.parse(code)
-          console.log(parse, '=====>')
+          // console.log(parse, '=====>')
 
           return {
             code: dataToEsm(parse),

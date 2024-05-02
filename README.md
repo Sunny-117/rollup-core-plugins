@@ -2,19 +2,19 @@
 
 ![](./assets/2024-04-29-12-35-39.png)
 
-## 摇树优化(tree shaking)
+## 除屑优化(tree shaking)
 
 除了可以使用 ES 模块之外，Rollup 还可以静态分析你导入的代码，并将排除任何实际上没有使用的内容，从上面的引入和最后的打包结果就可以看到，没有使用到的内容直接被删除了。
 
-> 注意，**摇树优化的核心思想是在编译阶段通过静态分析确定代码的使用情况，而不是在运行时**。
+> 注意，**除屑优化的核心思想是在编译阶段通过静态分析确定代码的使用情况，而不是在运行时**。
 
-所以摇树优化一般是建立在**ES6 模块化语法**基础之上的，ESM的导入导出是静态的。
+所以除屑优化一般是建立在**ES6 模块化语法**基础之上的，ESM的导入导出是静态的。
 
-CommonJS 模块的导入和导出是动态的，无法在编译阶段静态确定代码的使用情况。一般情况下，摇树优化工具无法在 CommonJS 模块中进行精确的摇树，因为无法静态分析模块间的导入和导出关系。
+CommonJS 模块的导入和导出是动态的，无法在编译阶段静态确定代码的使用情况。一般情况下，除屑优化工具无法在 CommonJS 模块中进行精确的摇树，因为无法静态分析模块间的导入和导出关系。
 
-然而，一些构建工具（如 Webpack）会尝试通过静态分析和启发式方法对 CommonJS 模块进行近似的摇树优化。它们会尽可能地识别出那些可以在编译阶段确定未被使用的代码，并进行剔除。但这种处理方式可能不如对 ES6 模块的优化效果好，且有一定的限制。
+然而，一些构建工具（如 Webpack）会尝试通过静态分析和启发式方法对 CommonJS 模块进行近似的除屑优化。它们会尽可能地识别出那些可以在编译阶段确定未被使用的代码，并进行剔除。但这种处理方式可能不如对 ES6 模块的优化效果好，且有一定的限制。
 
-**摇树优化的原理：**
+**除屑优化的原理：**
 
 1. 静态分析：对 JavaScript 代码进行静态分析，识别出模块的导入和导出关系。
 2. 标记未使用代码：标记出在导入和导出关系上没有被使用的代码。这些代码可能是模块的导出函数、变量、类等。
@@ -24,12 +24,12 @@ CommonJS 模块的导入和导出是动态的，无法在编译阶段静态确�
 
 ```javascript
 // 直接默认导入整个对象
-import util from "./util.js";
+import util from './util.js'
 const r = util.getRandomNum(1, 10)
 console.log(r)
 
 // 具名导入具体的函数
-import { getRandomNum } from "./util.js";
+import { getRandomNum } from './util.js'
 const r = getRandomNum(1, 10)
 console.log(r)
 ```
@@ -56,7 +56,17 @@ npx webpack --entry ./src/index.js -o dist --mode production
 ```
 
 ```javascript
-(()=>{"use strict";const o=(t=1,a=10,t=Math.ceil(t),a=Math.floor(a),Math.floor(Math.random()*(a-t+1))+t);var t,a;console.log(o)})();
+;(() => {
+  'use strict'
+  const o =
+    ((t = 1),
+    (a = 10),
+    (t = Math.ceil(t)),
+    (a = Math.floor(a)),
+    Math.floor(Math.random() * (a - t + 1)) + t)
+  var t, a
+  console.log(o)
+})()
 ```
 
 现在打包出来的内容就直接是压缩之后的代码了
@@ -67,16 +77,15 @@ npx webpack --entry ./src/index.js -o dist --mode production
 
 ```javascript
 export default {
-	input: 'src/index.js',
-	output: {
-		file: 'dist/bundle.js',
-		format: 'esm'
-	}
-};
+  input: 'src/index.js',
+  output: {
+    file: 'dist/bundle.js',
+    format: 'esm',
+  },
+}
 ```
 
 > **注意**：nodejs环境下要运行esm模块化的内容，要么文件名后缀处理为**.mjs**，要么package.json文件中配置**"type":"module"**，因为 Rollup 将遵循 [Node ESM 语义](https://nodejs.org/docs/latest-v14.x/api/packages.html#packages_determining_module_system)。
-
 
 # 常用配置
 
@@ -92,21 +101,21 @@ export default defineConfig({
   output: [
     {
       file: 'dist/bundle-iife.js',
-      format: 'iife'
+      format: 'iife',
     },
     {
       file: 'dist/bundle-esm.js',
-      format: 'esm'
+      format: 'esm',
     },
     {
       file: 'dist/bundle-cjs.js',
-      format: 'cjs'
+      format: 'cjs',
     },
     {
       file: 'dist/bundle-umd.js',
       format: 'umd',
-      name: 'bundle'
-    }
+      name: 'bundle',
+    },
   ],
 })
 ```
@@ -119,20 +128,20 @@ export default defineConfig({
 
 ```javascript
 // src/main.js
-import util from "./util.js";
+import util from './util.js'
 const r = util.getRandomNum(1, 10)
-console.log("🚀 ~ r:", r)
+console.log('🚀 ~ r:', r)
 
 const obj = {
   a: 1,
   b: {
-    c: 3
-  }
+    c: 3,
+  },
 }
 const cloneObj = util.deepClone(obj)
-cloneObj.b.c = 4;
-console.log("🚀 ~ obj:", obj)
-console.log("🚀 ~ cloneObj:", cloneObj)
+cloneObj.b.c = 4
+console.log('🚀 ~ obj:', obj)
+console.log('🚀 ~ cloneObj:', cloneObj)
 ```
 
 **rollup.config.js**
@@ -141,12 +150,12 @@ console.log("🚀 ~ cloneObj:", cloneObj)
 import { defineConfig } from 'rollup'
 
 export default defineConfig({
-  input: ['src/index.js','src/main.js'],
+  input: ['src/index.js', 'src/main.js'],
   output: [
     {
       dir: 'dist',
-      format: 'cjs'
-    }
+      format: 'cjs',
+    },
   ],
 })
 ```
@@ -156,16 +165,16 @@ export default defineConfig({
 ```javascript
 import { defineConfig } from 'rollup'
 export default defineConfig({
-  input: ['src/index.js','src/main.js'],
+  input: ['src/index.js', 'src/main.js'],
   output: [
     {
       dir: 'cjs',
-      format: 'cjs'
+      format: 'cjs',
     },
     {
       dir: 'esm',
-      format: 'esm'
-    }
+      format: 'esm',
+    },
   ],
 })
 ```
@@ -182,8 +191,8 @@ const buildIndexOptions = {
   output: {
     dir: 'dist/umd/',
     format: 'umd',
-    name: 'bundle'
-  }
+    name: 'bundle',
+  },
 }
 
 /**
@@ -194,9 +203,9 @@ const buildMainOptions = {
   output: {
     dir: 'dist/esm/',
     format: 'esm',
-  }
+  },
 }
-export default [buildIndexOptions, buildMainOptions];
+export default [buildIndexOptions, buildMainOptions]
 ```
 
 ## 动态导入与默认代码分割
@@ -205,16 +214,16 @@ export default [buildIndexOptions, buildMainOptions];
 
 ```javascript
 // src/main.js
-function run() { 
+function run() {
   // 如果不清楚import动态导入返回的是什么，可以先打印一下下面结果
   // import("./util.js").then(chunk => console.log("🚀 ~ chunk:", chunk));
 
-  import("./util.js").then(({ default: foo }) => { 
-    const r = foo.getRandomNum(1, 10);
-    console.log("🚀 ~ r:", r) 
+  import('./util.js').then(({ default: foo }) => {
+    const r = foo.getRandomNum(1, 10)
+    console.log('🚀 ~ r:', r)
   })
 }
-run();
+run()
 ```
 
 重新运行可以看到dist目录形成了下面的结构:
@@ -247,7 +256,7 @@ const buildMainOptions = {
     entryFileNames: '[name].js',
     chunkFileNames: 'chunk-[name]-[hash].js',
     format: 'esm',
-  }
+  },
 }
 ```
 
@@ -264,14 +273,14 @@ const buildMainOptions = {
     entryFileNames: '[name].js',
     chunkFileNames: 'chunk-[name]-[hash].js',
     format: 'esm',
-  }
+  },
 }
 ```
 
 在打包后的main2.js中，可以看到这样的引用：
 
 ```javascript
-import util from './chunk-util-371e3ef9.js';
+import util from './chunk-util-371e3ef9.js'
 ```
 
 ## 使用插件
@@ -291,9 +300,9 @@ pnpm add lodash-es -D
 在index.js中使用
 
 ```javascript
-import { chunk } from "lodash-es";
-const r = chunk([1, 2, 3, 4], 2);
-console.log("🚀 ~ r:", r)
+import { chunk } from 'lodash-es'
+const r = chunk([1, 2, 3, 4], 2)
+console.log('🚀 ~ r:', r)
 ```
 
 现在直接打包
@@ -307,7 +316,7 @@ const buildIndexOptions = {
   output: {
     dir: 'dist/esm/',
     format: 'esm',
-  }
+  },
 }
 export default buildIndexOptions
 ```
@@ -365,7 +374,7 @@ pnpm add @rollup/plugin-node-resolve --save-dev
 **使用：**
 
 ```javascript
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 /**
  * @type {import('rollup').RollupOptions}
  */
@@ -375,7 +384,7 @@ const buildIndexOptions = {
     dir: 'dist/esm/',
     format: 'esm',
   },
-  plugins: [nodeResolve()]
+  plugins: [nodeResolve()],
   // external: ['lodash-es']
 }
 export default buildIndexOptions
@@ -389,7 +398,7 @@ export default buildIndexOptions
 
 ```javascript
 const buildIndexOptions = {
-  input: 'src/index.js',  
+  input: 'src/index.js',
   output: {
     dir: 'dist/esm/',
     format: 'esm',
@@ -397,19 +406,17 @@ const buildIndexOptions = {
     chunkFileNames: 'chunk-[name]-[hash].js',
     manualChunks: {
       'lodash-es': ['lodash-es'],
-    }
+    },
     //也可以是函数形式
     // manualChunks(id){
     //   if(id.includes('lodash-es')){
     //     return 'lodash-es'
     //   }
     // }
-	},
-  plugins: [nodeResolve()]
+  },
+  plugins: [nodeResolve()],
 }
 ```
-
-
 
 ### [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs)
 
@@ -501,28 +508,26 @@ pnpm add -D @babel/core @babel/preset-env
 
 具体的babel设置，可以参考[**babel文档**](https://babeljs.io/docs/config-files#project-wide-configuration)
 
-
-
 #### 题外话：@babel/runtime
 
 我们在`index.js`代码中加入如下的api
 
 ```javascript
-import { getRandomNum } from "./util.js";
+import { getRandomNum } from './util.js'
 const r = getRandomNum(1, 10)
 console.log(r)
 
-const arr = [1, 2, 3, 4].map(item => item * item);
-console.log("🚀 ~ arr:", arr)
+const arr = [1, 2, 3, 4].map((item) => item * item)
+console.log('🚀 ~ arr:', arr)
 
-Promise.resolve(1).then(res => {
-  console.log(res);
-});
+Promise.resolve(1).then((res) => {
+  console.log(res)
+})
 ```
 
 我们通过babel处理之后会发现一些问题：
 
- @babel/preset-env 只转换了语法，也就是我们看到的箭头函数、const一类，但是对于进一步需要转换内置对象、实例方法等等API，就显得无能为力了，这些代码需要**polyfill(兼容性垫片)**。所以这个我需要`@babel/runtime`来帮我们处理。
+@babel/preset-env 只转换了语法，也就是我们看到的箭头函数、const一类，但是对于进一步需要转换内置对象、实例方法等等API，就显得无能为力了，这些代码需要**polyfill(兼容性垫片)**。所以这个我需要`@babel/runtime`来帮我们处理。
 
 `@babel/runtime`是一个核心， 一种实现方式，但是在实现polyfill垫片的过程中，可能会产生很多重复的代码，所以需要`@babel/plugin-transform-runtime`防止污染全局， 抽离公共的 helper function , 防止冗余，当然在处理polyfill的时候，我们还需要core-js的辅助，基于babel，我们可以使用`@babel/runtime-corejs3`
 
@@ -536,10 +541,10 @@ pnpm add @babel/runtime @babel/runtime-corejs3
 要使用`@babel/plugin-transform-runtime`，`@rollup/plugin-babel`的[**babelHelper**](https://github.com/rollup/plugins/tree/master/packages/babel#babelhelpers)处理必须改为runtime
 
 ```javascript
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import babel from '@rollup/plugin-babel';
-import typescript from '@rollup/plugin-typescript';
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import babel from '@rollup/plugin-babel'
+import typescript from '@rollup/plugin-typescript'
 /**
  * @type {import('rollup').RollupOptions}
  */
@@ -556,10 +561,10 @@ const buildIndexOptions = {
       babelHelpers: 'runtime',
       include: 'src/**',
       exclude: 'node_modules/**',
-      extensions:['.js', '.ts']
+      extensions: ['.js', '.ts'],
     }),
     typescript(),
-  ]
+  ],
 }
 export default buildIndexOptions
 ```
@@ -629,16 +634,16 @@ export const getRandomNum = (min: number, max: number): number => {
 Index.ts
 
 ```javascript
-import { getRandomNum,deepClone } from './util.ts';
-const r = getRandomNum(1, 10);
-console.log(r);
+import { getRandomNum, deepClone } from './util.ts'
+const r = getRandomNum(1, 10)
+console.log(r)
 
-const obj = { a: 1, b: { c: 3 } };
-const obj2 = deepClone(obj);
-obj2.b.c = 4;
+const obj = { a: 1, b: { c: 3 } }
+const obj2 = deepClone(obj)
+obj2.b.c = 4
 
-console.log(obj);
-console.log(obj2);
+console.log(obj)
+console.log(obj2)
 ```
 
 当然，配置文件我们也完全可以是ts的
@@ -711,8 +716,8 @@ export default config;
 npx rollup -c rollup.config.ts --configPlugin typescript
 ```
 
-
 # 构建react应用
+
 ## node_modules
 
 ```shell
@@ -726,7 +731,7 @@ pnpm add @types/react @types/react-dom -D
 pnpm add @babel/preset-react -D
 
 # rollup
-pnpm add rollup -D 
+pnpm add rollup -D
 
 # rollup常规插件
 pnpm add @rollup/plugin-node-resolve @rollup/plugin-commonjs -D
@@ -744,7 +749,7 @@ pnpm add @babel/plugin-transform-runtime @babel/runtime @babel/runtime-corejs3 -
 pnpm add rollup-plugin-generate-html-template -D
 
 # 替换字符串
-pnpm add @rollup/plugin-replace -D 
+pnpm add @rollup/plugin-replace -D
 
 # 开发服务器与live server
 pnpm add rollup-plugin-serve rollup-plugin-livereload -D
@@ -753,7 +758,7 @@ pnpm add rollup-plugin-serve rollup-plugin-livereload -D
 pnpm add rollup-plugin-clear -D
 
 # scss
-pnpm add rollup-plugin-scss sass -D 
+pnpm add rollup-plugin-scss sass -D
 
 # postcss
 pnpm add postcss rollup-plugin-postcss -D
@@ -765,7 +770,7 @@ pnpm add @rollup/plugin-image -D
 pnpm add @types/node -D
 
 # 别名插件
-pnpm add @rollup/plugin-alias -D 
+pnpm add @rollup/plugin-alias -D
 
 # terser
 pnpm add @rollup/plugin-terser -D
@@ -857,7 +862,7 @@ const config: RollupOptions = {
     entryFileNames: "[name].[hash:6].js",
     chunkFileNames: "chunks/chunk-[name]-[hash].js",
     // 代码分割
-    // manualChunks: { 
+    // manualChunks: {
     //   react: ["react", "react-dom"]
     // },
     globals: {
@@ -924,7 +929,7 @@ export default config;
 
 ```shell
 # rollup
-pnpm add rollup -D 
+pnpm add rollup -D
 
 # rollup常规插件
 pnpm add @rollup/plugin-node-resolve @rollup/plugin-commonjs -D
@@ -958,8 +963,6 @@ pnpm add @types/lodash-es -D
 }
 ```
 
-
-
 ## 本地调试link安装
 
 最终打包的文件夹是dist文件夹，我们可以把package.json文件和README.md文件都拷贝到dist目录中。
@@ -990,18 +993,15 @@ pnpm link --global 包名
 
 **卸载link** [pnpm unlink](https://pnpm.io/zh/cli/unlink)
 
-
-
 ## 发布到npm
-
 
 常用命令：
 
-- `npm whoami`  检测当前登录状态
+- `npm whoami` 检测当前登录状态
 
-- `npm config ls`  显示当前 npm 配置信息
+- `npm config ls` 显示当前 npm 配置信息
 
-- `npm addUser` 、`npm login`  登录
+- `npm addUser` 、`npm login` 登录
 
 - `npm config set registry 链接地址` 切换源地址
 
@@ -1024,56 +1024,56 @@ Rollup 提供了一个可从 Node.js 使用的 JavaScript API。你很少需要�
 其实用起来的基本思路和配置文件差不多。直接来看一下效果：
 
 ```javascript
-const rollup = require('rollup');
+const rollup = require('rollup')
 
 const inputOptions = {
   input: 'src/index.js',
   external: [],
-  plugins: []
+  plugins: [],
 }
 
 const outputOptions = {
   dir: 'dist',
   format: 'esm',
   sourcemap: true,
-  entryFileNames: '[name].[hash].js'
+  entryFileNames: '[name].[hash].js',
 }
 
-async function build() { 
-  let bundle;
-  let buildFailed = false;
+async function build() {
+  let bundle
+  let buildFailed = false
   try {
-    bundle = await rollup.rollup(inputOptions);
-    await bundle.write(outputOptions);
+    bundle = await rollup.rollup(inputOptions)
+    await bundle.write(outputOptions)
   } catch (error) {
-    buildFailed = true;
-    console.error(error);
+    buildFailed = true
+    console.error(error)
   }
-  
+
   if (bundle) {
     // 关闭打包过程
-    await bundle.close();
+    await bundle.close()
   }
-  process.exit(buildFailed ? 1 : 0);
+  process.exit(buildFailed ? 1 : 0)
 }
 
-build();
+build()
 
 const watchOptions = {
   ...inputOptions,
   output: [outputOptions],
   watch: {
     include: 'src/**',
-    exclude: 'node_modules/**'
-  }
-};
-const watcher = rollup.watch(watchOptions);
+    exclude: 'node_modules/**',
+  },
+}
+const watcher = rollup.watch(watchOptions)
 
-watcher.on('event', event => {
-  console.log(event);
+watcher.on('event', (event) => {
+  console.log(event)
   //确保每次打包完成后正确的关闭打包
   if (event.result) {
-    event.result.close();
+    event.result.close()
   }
 })
 ```
@@ -1089,21 +1089,21 @@ watcher.on('event', event => {
 主要负责创建模块依赖，初始化哥哥模块的AST(抽象语法树)，以及模块之间的依赖关系
 
 ```javascript
-const rollup = require('rollup');
+const rollup = require('rollup')
 
 const inputOptions = {
   input: 'src/index.js',
   external: [],
-  plugins: []
+  plugins: [],
 }
 
-async function build() { 
-  const bundle = await rollup.rollup(inputOptions);
-  console.log(bundle); // 打印bundle对象
-  console.log(bundle.cache.modules); //打印模块内容
+async function build() {
+  const bundle = await rollup.rollup(inputOptions)
+  console.log(bundle) // 打印bundle对象
+  console.log(bundle.cache.modules) //打印模块内容
 }
 
-build();
+build()
 ```
 
 ```javascript
@@ -1124,8 +1124,6 @@ build();
   write: [AsyncFunction: write]
 }
 ```
-
-
 
 ```javascript
 // 打印模块内容
@@ -1274,8 +1272,6 @@ build();
 ]
 ```
 
-
-
 通过上面两个打印语句的结果，其实就可以分析出，在`build`阶段产生的`bunlde`对象，并没有模块打包，这个对象的作用在于存储各个模块的内容及依赖关系，并且提供了`generate(不写入)`，`write(写入磁盘)`方法，方便后续output阶段输出产物
 
 ### 2、output
@@ -1287,28 +1283,28 @@ build();
 - write 生成打包产物，写入磁盘
 
 ```javascript
-const rollup = require('rollup');
+const rollup = require('rollup')
 
 const inputOptions = {
   input: 'src/index.js',
   external: [],
-  plugins: []
+  plugins: [],
 }
 
 const outputOptions = {
   dir: 'dist',
   format: 'esm',
   sourcemap: true,
-  entryFileNames: '[name].[hash].js'
+  entryFileNames: '[name].[hash].js',
 }
 
-async function build() { 
-  const bundle = await rollup.rollup(inputOptions);
-  const resp = await bundle.generate(outputOptions);
+async function build() {
+  const bundle = await rollup.rollup(inputOptions)
+  const resp = await bundle.generate(outputOptions)
   console.log(resp)
 }
 
-build();
+build()
 ```
 
 **执行结果：**
@@ -1381,7 +1377,6 @@ build();
 }
 ```
 
-
 # 插件机制
 
 > 代码：https://github.com/Sunny-117/rollup-plugins
@@ -1436,16 +1431,16 @@ version：插件的版本
 
 ```javascript
 export default function resolveFirst() {
-	return {
-		name: 'resolve-first',
-		resolveId: {
-			order: 'pre',
-			handler(source) {
-				console.log(source);
-				return null;
-			}
-		}
-	};
+  return {
+    name: 'resolve-first',
+    resolveId: {
+      order: 'pre',
+      handler(source) {
+        console.log(source)
+        return null
+      },
+    },
+  }
 }
 ```
 
@@ -1464,72 +1459,70 @@ export default function resolveFirst() {
 ```javascript
 // rollup-plugin-example.js
 
-export default function myExample () {
+export default function myExample() {
   return {
     name: 'my-example',
-    options (options) {
-      console.log("🎉 -- options:", options)
+    options(options) {
+      console.log('🎉 -- options:', options)
     },
-    buildStart (options) {
-      console.log("✨ -- buildStart:", options)
+    buildStart(options) {
+      console.log('✨ -- buildStart:', options)
     },
-    resolveId (source,importer) {
-      console.log("🚀 -- resolveId(source):", source)
-      console.log("🚀 -- resolveId(importer):", importer)
-      return null; 
+    resolveId(source, importer) {
+      console.log('🚀 -- resolveId(source):', source)
+      console.log('🚀 -- resolveId(importer):', importer)
+      return null
     },
-    load (id) {
-      console.log("🌈 ~ id:", id)
-      return null; 
+    load(id) {
+      console.log('🌈 ~ id:', id)
+      return null
     },
-    transform(code,id) { 
-      console.log("🌟 -- transform");
-      console.log("---",code)
-      console.log("---",id)
+    transform(code, id) {
+      console.log('🌟 -- transform')
+      console.log('---', code)
+      console.log('---', id)
     },
-    moduleParsed (info) {
-      console.log("⭐️ -- moduleParsed:", info)
+    moduleParsed(info) {
+      console.log('⭐️ -- moduleParsed:', info)
     },
-    buildEnd() { 
-      console.log("😁 -- buildEnd");
-    }
-  };
+    buildEnd() {
+      console.log('😁 -- buildEnd')
+    },
+  }
 }
 ```
-
-
 
 #### 调用虚拟模块插件示例
 
 ```javascript
-const virtualModuleId = 'virtual-module';
+const virtualModuleId = 'virtual-module'
 // rollup约定插件使用“虚拟模块”，使用\0前缀模块 ID。这可以防止其他插件尝试处理它。
-const resolvedVirtualModuleId = '\0' + virtualModuleId;
+const resolvedVirtualModuleId = '\0' + virtualModuleId
 export default function virtualModule() {
   return {
-    name: 'virtual-module', 
-    resolveId (source) {
-      if (source === 'virtual-module') { 
-        return resolvedVirtualModuleId; // 告诉Rollup，这个ID是外部模块，不要在此处查找它
+    name: 'virtual-module',
+    resolveId(source) {
+      if (source === 'virtual-module') {
+        return resolvedVirtualModuleId // 告诉Rollup，这个ID是外部模块，不要在此处查找它
       }
-      return null; // 其他ID应按通常方式处理
+      return null // 其他ID应按通常方式处理
     },
-    load (id) {
-      console.log("🌈 - id:", id)
-      if (id === resolvedVirtualModuleId) { 
+    load(id) {
+      console.log('🌈 - id:', id)
+      if (id === resolvedVirtualModuleId) {
         // return 'export default "This is virtual!"'; // 告诉Rollup，如何加载此模块
         return 'export default function fib(n) { return n <= 1 ? n : fib(n - 1) + fib(n - 2); }'
       }
-      return null; // 其他ID应按通常方式处理
+      return null // 其他ID应按通常方式处理
     },
-  };
+  }
 }
 ```
 
 **界面调用**
 
 ```javascript
-import fib from "virtual-module";
+import fib from 'virtual-module'
 console.log(fib(10))
 ```
 
@@ -1552,212 +1545,199 @@ pnpm add @rollup/plugin-commonjs @rollup/plugin-node-resolve @rollup/pluginutils
 **rollup-plugin-json**
 
 ```javascript
-import { createFilter,dataToEsm } from '@rollup/pluginutils';
-import path from 'path';
+import { createFilter, dataToEsm } from '@rollup/pluginutils'
+import path from 'path'
 
 export default function myJson(options = {}) {
   // createFilter 返回一个函数，这个函数接收一个id路径参数，返回一个布尔值
   // 这个布尔值表示是否要处理这个id路径
   // rollup 推荐每一个 transform 类型的插件都需要提供 include 和 exclude 选项，生成过滤规则
-  const filter = createFilter(options.include, options.exclude);
+  const filter = createFilter(options.include, options.exclude)
   return {
     name: 'rollup-plugin-json',
     transform: {
-      order: "pre",
+      order: 'pre',
       handler(code, id) {
-        if (!filter(id) || path.extname(id) !== '.json') return null;
+        if (!filter(id) || path.extname(id) !== '.json') return null
         try {
-          const parse = JSON.stringify(JSON.parse(code));
+          const parse = JSON.stringify(JSON.parse(code))
           return {
             // dataToEsm 将数据转换成esm模块
             // 其实就是 export default "xxx"
-            code: dataToEsm(parse), 
-            map: { mappings: '' }
-          };
-        } catch (err) { 
-          const message = 'Could not parse JSON file';
-          this.error({ message, id, cause: err });
-          return null;
+            code: dataToEsm(parse),
+            map: { mappings: '' },
+          }
+        } catch (err) {
+          const message = 'Could not parse JSON file'
+          this.error({ message, id, cause: err })
+          return null
         }
-      }
-    }
-  };
+      },
+    },
+  }
 }
 ```
 
 **界面调用**
 
 ```javascript
-import pkg from "../package.json";
-import test from "../test.json"; // 错误json格式演示
+import pkg from '../package.json'
+import test from '../test.json' // 错误json格式演示
 console.log(pkg.name)
 ```
-
-
 
 #### [插件上下文](https://cn.rollupjs.org/plugin-development/#plugin-context)
 
 ```javascript
-import { createFilter } from '@rollup/pluginutils';
+import { createFilter } from '@rollup/pluginutils'
 
 export default function customPlugin(options) {
-  const filter = createFilter(options.include, options.exclude);
+  const filter = createFilter(options.include, options.exclude)
 
   return {
     name: 'custom-plugin',
 
     transform(code, id) {
       if (!filter(id)) {
-        return null;
+        return null
       }
 
-      const parsedCode = this.parse(code); // 解析代码,获取AST
+      const parsedCode = this.parse(code) // 解析代码,获取AST
 
-      const source = `${code}\n\n${JSON.stringify(parsedCode, null, 2)}`;
-      
-      const fileName = id.split('/').pop();
+      const source = `${code}\n\n${JSON.stringify(parsedCode, null, 2)}`
+
+      const fileName = id.split('/').pop()
 
       if (options.emitFile) {
         this.emitFile({
           type: 'asset',
           fileName: fileName + '.txt',
           source,
-        });
+        })
       }
     },
-  };
+  }
 }
 ```
 
 #### 图片读取
 
 ```javascript
-import { createFilter,dataToEsm } from "@rollup/pluginutils";
-import { extname,resolve,basename,relative,normalize,sep } from "path";
-import fs from "fs";
-import svgToMiniDataURI from "mini-svg-data-uri";
+import { createFilter, dataToEsm } from '@rollup/pluginutils'
+import { extname, resolve, basename, relative, normalize, sep } from 'path'
+import fs from 'fs'
+import svgToMiniDataURI from 'mini-svg-data-uri'
 
 const defaults = {
   fileSize: 1024 * 4,
-  target: "./dist",
+  target: './dist',
   include: null,
   exclude: null,
 }
 
 const mimeTypes = {
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml",
-  ".ico": "image/x-icon",
-  ".webp": "image/webp",
-  ".avif": "image/avif"
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.webp': 'image/webp',
+  '.avif': 'image/avif',
 }
 
 const getDataUri = ({ format, isSvg, mime, source }) =>
-  isSvg ? svgToMiniDataURI(source) : `data:${mime};${format},${source}`;
+  isSvg ? svgToMiniDataURI(source) : `data:${mime};${format},${source}`
 
-
-const ensureDirExists = async (dirPath) => { 
+const ensureDirExists = async (dirPath) => {
   try {
-    await fs.promises.access(dirPath);
-    return true;
-  } catch (err) { 
+    await fs.promises.access(dirPath)
+    return true
+  } catch (err) {
     // 文件夹不存在就创建文件夹
     try {
-      await fs.promises.mkdir(dirPath, { recursive: true });
-      return true;
+      await fs.promises.mkdir(dirPath, { recursive: true })
+      return true
+    } catch (err) {
+      console.error(err)
+      return false
     }
-    catch (err) { 
-      console.error(err);
-      return false;
-    }
-    
   }
 }
 
-export default function myImage(opts = {}) { 
-  const options = Object.assign({}, defaults, opts);
-  const filter = createFilter(options.include, options.exclude);
+export default function myImage(opts = {}) {
+  const options = Object.assign({}, defaults, opts)
+  const filter = createFilter(options.include, options.exclude)
   return {
-    name: "my-image",
-    async transform(code, id) { 
-      if (!filter(id)) return null;
-      
+    name: 'my-image',
+    async transform(code, id) {
+      if (!filter(id)) return null
+
       // 获取后缀
-      const ext = extname(id);
+      const ext = extname(id)
       // 判断是否是图片
-      if(!mimeTypes.hasOwnProperty(ext)) {
-        return null;
+      if (!mimeTypes.hasOwnProperty(ext)) {
+        return null
       }
 
       // 获取图片的mime类型
-      const mime = mimeTypes[ext];
+      const mime = mimeTypes[ext]
       // 判断是否svg
-      const isSvg = mime === mimeTypes[".svg"];
+      const isSvg = mime === mimeTypes['.svg']
       // 图片format格式
-      const format = isSvg ? "utf-8" : "base64";
+      const format = isSvg ? 'utf-8' : 'base64'
 
       // 目标路径
-      const assetsPath = resolve(process.cwd(), options.target);
-      console.log("---",process.cwd())
-      console.log("---",options.target)
-      console.log("---", assetsPath);
+      const assetsPath = resolve(process.cwd(), options.target)
+      console.log('---', process.cwd())
+      console.log('---', options.target)
+      console.log('---', assetsPath)
 
       //获取文件名
-      const fileName = basename(id);
+      const fileName = basename(id)
       // 最终文件路径
-      const filePath = resolve(assetsPath, fileName);
-      console.log("===", filePath);
+      const filePath = resolve(assetsPath, fileName)
+      console.log('===', filePath)
 
-      let relativePath = normalize(relative(process.cwd(), filePath));
-      relativePath = relativePath.substring(relativePath.indexOf(sep) + 1);
+      let relativePath = normalize(relative(process.cwd(), filePath))
+      relativePath = relativePath.substring(relativePath.indexOf(sep) + 1)
 
-      console.log(relativePath);
+      console.log(relativePath)
 
       try {
-
         // 如果图片文件过大，就应该直接拷贝文件，返回文件路径
         // 读取图片文件大小与设置的大小进行比较
-        const stat = await fs.promises.stat(id);
+        const stat = await fs.promises.stat(id)
         if (stat.size > options.fileSize) {
           // 文件的拷贝，以及对象的返回
           // 文件拷贝，无非就是文件源路径，目标路径
           //copyFile 拷贝文件地址的文件夹必须存在
           // 如果文件夹不存在，那么就创建文件夹
-          const dirExists = await ensureDirExists(assetsPath);
-          dirExists && await fs.promises.copyFile(id, filePath);
+          const dirExists = await ensureDirExists(assetsPath)
+          dirExists && (await fs.promises.copyFile(id, filePath))
           return {
             code: dataToEsm(relativePath), //返回拷贝之后处理的路径
-            map: { mappings: "" }
+            map: { mappings: '' },
           }
-
         } else {
           // 否则转换为base64格式
           // 读取文件
-          const source = await fs.promises.readFile(id, format);
+          const source = await fs.promises.readFile(id, format)
 
           return {
             code: dataToEsm(getDataUri({ format, isSvg, mime, source })),
-            map: { mappings: "" }
+            map: { mappings: '' },
           }
         }
-
-      } catch (err) { 
-        const message = "图片转换失败:" + id;
-        this.error({ message, id, cause: err });
-        return null;
+      } catch (err) {
+        const message = '图片转换失败:' + id
+        this.error({ message, id, cause: err })
+        return null
       }
-
-    }
+    },
   }
 }
 ```
-
-
-
-
 
 ### 输出钩子执行顺序
 
@@ -1777,18 +1757,20 @@ export default function myImage(opts = {}) {
 export default function myExample2() {
   return {
     name: 'my-example2',
-    outputOptions (options) {
-      console.log("🎉 ~ options:", options)
+    outputOptions(options) {
+      console.log('🎉 ~ options:', options)
     },
-    renderStart (options) {
-      console.log("✨ ~ renderStart:", options)
+    renderStart(options) {
+      console.log('✨ ~ renderStart:', options)
     },
-    renderDynamicImport (options) {
-      console.log("✨~ renderDynamicImport:", options)
+    renderDynamicImport(options) {
+      console.log('✨~ renderDynamicImport:', options)
     },
-    banner(chunk) { 
-      console.log("🔥 ~ banner(chunk):", chunk)
-      const comment = chunk.name === "index" ? `/*
+    banner(chunk) {
+      console.log('🔥 ~ banner(chunk):', chunk)
+      const comment =
+        chunk.name === 'index'
+          ? `/*
 * 
 * 　　┏┓　　　┏┓+ +
 * 　┏┛┻━━━┛┻┓ + +
@@ -1812,30 +1794,31 @@ export default function myExample2() {
 * 　　　　┃┫┫　┃┫┫
 * 　　　　┗┻┛　┗┻┛+ + + +
 * 
-*/` : "";
-      return comment;
+*/`
+          : ''
+      return comment
     },
-    renderChunk (source) {
-      console.log("🚀 ~ source:", source)
-      return null; 
+    renderChunk(source) {
+      console.log('🚀 ~ source:', source)
+      return null
     },
-    augmentChunkHash (chunk) {
-      console.log("🎉 ~ augmentChunkHash:", chunk)
+    augmentChunkHash(chunk) {
+      console.log('🎉 ~ augmentChunkHash:', chunk)
     },
-    generateBundle(options, bundle) { 
-      console.log("🌈 ~ options:", options)
-      console.log("🌈 ~ bundle:", bundle)
-      Object.keys(bundle).forEach(key => { 
-        if (key.includes("sum")) { 
+    generateBundle(options, bundle) {
+      console.log('🌈 ~ options:', options)
+      console.log('🌈 ~ bundle:', bundle)
+      Object.keys(bundle).forEach((key) => {
+        if (key.includes('sum')) {
           //删除对象中的这个键值对
-          delete bundle[key];
+          delete bundle[key]
         }
-      });
+      })
     },
-    closeBundle() { 
-      console.log("😁 ~ closeBundle");
-    }
-  };
+    closeBundle() {
+      console.log('😁 ~ closeBundle')
+    },
+  }
 }
 ```
 
@@ -1843,63 +1826,58 @@ export default function myExample2() {
 
 ```javascript
 export default function bundleStats() {
-  let startTime;
+  let startTime
   return {
     name: 'bundle-stats',
     options() {
-      startTime = Date.now();
+      startTime = Date.now()
     },
     generateBundle(_, bundle) {
-      const fileSizes = {};
+      const fileSizes = {}
 
       for (const [fileName, output] of Object.entries(bundle)) {
         if (output.type === 'chunk') {
-          const content = output.code;
-          const size = Buffer.byteLength(content, 'utf8');
-          const sizeInKB = (size / 1024).toFixed(2);
+          const content = output.code
+          const size = Buffer.byteLength(content, 'utf8')
+          const sizeInKB = (size / 1024).toFixed(2)
 
-          fileSizes[fileName] = `${sizeInKB} KB`;
+          fileSizes[fileName] = `${sizeInKB} KB`
         }
       }
-      console.log('Bundle Stats:');
-      console.log('-------------');
-      console.log('File Sizes:');
-      console.log(fileSizes);
-      console.log('-------------');
+      console.log('Bundle Stats:')
+      console.log('-------------')
+      console.log('File Sizes:')
+      console.log(fileSizes)
+      console.log('-------------')
     },
     closeBundle() {
-      const totalTime = Date.now() - startTime;
-      console.log(`Total Bundle Time: ${totalTime} ms`);
-      console.log('-------------');
-    }
-  };
+      const totalTime = Date.now() - startTime
+      console.log(`Total Bundle Time: ${totalTime} ms`)
+      console.log('-------------')
+    },
+  }
 }
 ```
 
 #### 代码压缩
 
 ```javascript
-import { minify } from 'uglify-js';
+import { minify } from 'uglify-js'
 
 export default function uglifyPlugin() {
   return {
     name: 'uglify',
 
     renderChunk(code) {
-      const result = minify(code);
+      const result = minify(code)
       if (result.error) {
-        throw new Error(`minify error: ${result.error}`);
+        throw new Error(`minify error: ${result.error}`)
       }
       return {
         code: result.code,
-        map: { mappings: '' }
-      };
+        map: { mappings: '' },
+      }
     },
-  };
+  }
 }
 ```
-
-
-
-
-

@@ -5,6 +5,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
+import postcssImport from 'postcss-import'
+import del from 'rollup-plugin-delete'
 
 export default ({ prod }) => {
   return defineConfig({
@@ -18,19 +20,30 @@ export default ({ prod }) => {
       globals: {
         lodash: '_', //告诉rollup全局变量_即是lodash
         jquery: '$' //告诉rollup全局变量$即是jquery
-      }
+      },
+      sourcemap: true, //生成source map文件
     },
     external: ['lodash', 'jquery'],
     plugins: [
       babel({
         exclude: "node_modules/**"
       }),
+      del({ targets: 'dist/*' }),
       resolve(),
       commonjs(),
       typescript(),
       ...(prod ? [terser()] : []),
-      postcss()
+      postcss({
+        extract: true, // 单独打包css
+        minimize: true, // 压缩 CSS
+        sourceMap: true, // 生成 source map 文件
+        plugins: [
+          postcssImport(), // 允许使用 @import 语法
+        ],
+      }
+      )
     ]
   })
 
 }
+

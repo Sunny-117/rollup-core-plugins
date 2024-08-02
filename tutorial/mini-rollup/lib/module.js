@@ -13,5 +13,18 @@ class Module {
     })
     analyse(this.ast, this.code, this);
   }
+  expandAllStatements() {
+    let allStatements = []
+    this.ast.body.forEach(statement => {
+      let statements = this.expandStatement(statement)
+      allStatements.push(...statements)
+    })
+    return allStatements
+  }
+  expandStatement(statement) {
+    let result = []
+    result.push(statement)
+    return result
+  }
 }
 module.exports = Module

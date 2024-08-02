@@ -10,7 +10,9 @@ class Bundle {
   build(output) {
     // 获取入口文件对应的模块
     const entryModule = this.fetchModule(this.entryPath)
-    console.log('entryModule:', entryModule)
+    // console.log('entryModule:', entryModule)
+    this.statements = entryModule.expandAllStatements()
+    console.log('this.statements', this.statements)
   }
   /**
    * 根据文件路径获取模块
@@ -25,6 +27,7 @@ class Bundle {
         path: route,
         bundle: this,
       })
+      return module
     }
   }
 }

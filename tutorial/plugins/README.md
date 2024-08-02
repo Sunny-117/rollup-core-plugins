@@ -36,3 +36,9 @@
 "@rollup/plugin-terser": "^0.4.3",
 "@rollup/plugin-typescript": "^11.1.3",
 ```
+
+## 注意
+
+webpack和rollup都会支持esm和commonjs，但是打包出来的结果webpack只能是commonjs
+
+rollup可以打包出commonjs也可以打包出esm

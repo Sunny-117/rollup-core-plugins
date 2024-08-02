@@ -22,6 +22,7 @@ class Module {
     return allStatements
   }
   expandStatement(statement) {
+    statement._included = true
     let result = []
     result.push(statement)
     return result

@@ -1,6 +1,7 @@
 const path = require('node:path')
 const fs = require('node:fs')
 const Module = require('./module')
+const MagicString = require('magic-string')
 
 class Bundle {
   constructor(options) {
@@ -13,6 +14,23 @@ class Bundle {
     // console.log('entryModule:', entryModule)
     this.statements = entryModule.expandAllStatements()
     console.log('this.statements', this.statements)
+    const { code } = this.generate()
+    const outputDir = path.dirname(output);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    fs.writeFileSync(output, code)
+  }
+  generate() {
+    let bundle = new MagicString.Bundle()
+    this.statements.forEach(statement => {
+      const source = statement._source.clone();
+      bundle.addSource({
+        content: source,
+        separator: '\n'
+      })
+    })
+    return { code: bundle.toString() }
   }
   /**
    * 根据文件路径获取模块

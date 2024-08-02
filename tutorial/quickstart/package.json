@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config --silent --prod",
-    "dev": "rollup --config"
+    "dev": "rollup --config rollup.config.dev.js -w"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +29,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@rollup/plugin-html": "^1.0.3",
     "postcss-import": "^16.1.0",
     "rollup-plugin-delete": "^2.0.0"
   }

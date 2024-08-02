@@ -1,4 +1,20 @@
-# 常用插件
+# plugin
+
+- Rollup 插件 是一个具有以下描述的一个或多个 属性 、 构建钩子 和 输出生成钩子 的对象，它遵循我们的约定。插件应该作为一个包分发，该包导出一个可以使用插件特定选项调用的函数并返回这样一个对象
+- 插件列表: https://github.com/rollup/awesome
+
+## 插件规范
+
+- 插件应该有一个清晰的名称，带有 rollup-plugin-prefix
+- 在package.json中包含插件关键字
+- 插件应该经过测试。我们推荐mocha或ava，它们支持开箱即用的Promise
+- 尽可能使用异步方法。
+- 编写英文文档
+- 如果合适的话，确保你的插件输出正确的 sourcemap
+- 如果您的插件使用“虚拟模块”（例如，用于辅助功能），请在模块ID前面加上 \0 。这会阻止其他插件尝试处理它
+
+## 常用插件
+
 ```
 @rollup/plugin-babel
 @rollup/plugin-commonjs

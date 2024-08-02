@@ -2,13 +2,12 @@
   "name": "tutorial",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "prettier": "^3.0.2"
   }

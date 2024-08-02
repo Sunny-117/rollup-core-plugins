@@ -1,4 +1,7 @@
 {
   "editor.formatOnSave": true,
-  "eslint.experimental.useFlatConfig": true
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  }
 }

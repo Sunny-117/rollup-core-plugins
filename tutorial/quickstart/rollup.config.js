@@ -2,9 +2,11 @@ import babel from '@rollup/plugin-babel'
 import { defineConfig } from 'rollup'
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 
 export default defineConfig({
-  input: ['src/main.js'],
+  // input: ['src/main.js'],
+  input: 'src/main.ts',
   output: {
     // dir: 'dist',
     file: 'dist/bundle.cjs.js',//输出文件的路径和名称
@@ -21,6 +23,7 @@ export default defineConfig({
       exclude: "node_modules/**"
     }),
     resolve(),
-    commonjs()
+    commonjs(),
+    typescript()
   ]
 })

@@ -1,0 +1,15 @@
+{
+  "name": "mini-rollup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "dependencies": {
+    "acorn": "^8.12.1",
+    "magic-string": "^0.30.11",
+    "rollup": "^4.19.2"
+  }
+}

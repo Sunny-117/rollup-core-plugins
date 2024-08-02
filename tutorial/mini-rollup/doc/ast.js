@@ -50,3 +50,17 @@ function visit(node, parent, enter, leave) {
     leave(node, parent)
   }
 }
+
+/**
+
+ImportDeclaration进入
+  ImportDefaultSpecifier进入
+    Identifier进入
+    Identifier离开
+  ImportDefaultSpecifier离开
+  Literal进入
+  Literal离开
+ImportDeclaration离开
+
+
+ */

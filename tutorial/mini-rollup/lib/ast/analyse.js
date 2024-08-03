@@ -96,5 +96,8 @@ function analyse(ast, code, module) {
       }
     })
   })
+  ast.body.forEach(statement => {
+    console.log('statement._defines', statement._defines)
+  })
 }
 module.exports = analyse

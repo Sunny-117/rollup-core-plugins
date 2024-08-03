@@ -13,7 +13,7 @@ class Bundle {
     const entryModule = this.fetchModule(this.entryPath)
     // console.log('entryModule:', entryModule)
     this.statements = entryModule.expandAllStatements()
-    console.log('this.statements', this.statements)
+    // console.log('this.statements', this.statements)
     const { code } = this.generate()
     const outputDir = path.dirname(output);
     if (!fs.existsSync(outputDir)) {

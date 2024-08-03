@@ -15,8 +15,11 @@ class Module {
     this.imports = {}
     // 本模块内导出了哪些变量
     this.exports = {}
+    // 存放本模块顶级变量的定义语句是哪条
+    this.definitions = {}
     analyse(this.ast, this.code, this);
-    console.log(this.imports, this.exports)
+    console.log('this.imports', this.imports)
+    console.log('this.definitions', this.definitions)
   }
   expandAllStatements() {
     let allStatements = []

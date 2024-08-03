@@ -1,9 +1,9 @@
 import { name as name1, age } from './msg'
-function sayHello() {
-  console.log('hello', name1)
+function sayHello(prefix) {
+  console.log('hello', name1, prefix)
 }
 
-sayHello()
+sayHello('函数模块')
 
 export const x = 1;
 // console.log('hello')

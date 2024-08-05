@@ -26,6 +26,14 @@ class Bundle {
     let bundle = new MagicString.Bundle()
     this.statements.forEach(statement => {
       const source = statement._source.clone();
+      /**
+       * export const name = '123'
+       * ---->
+       * const name = '123'
+       */
+      if (statement.type === "ExportNamedDeclaration") {
+        source.remove(statement.start, statement.declaration.start)
+      }
       bundle.addSource({
         content: source,
         separator: '\n'

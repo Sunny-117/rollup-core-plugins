@@ -2,11 +2,12 @@ const path = require('node:path')
 const fs = require('node:fs')
 const Module = require('./module')
 const MagicString = require('magic-string')
-
+const { addSuffix } = require('./utils')
 class Bundle {
   constructor(options) {
     // 入口文件绝对路径
-    this.entryPath = path.resolve(options.entry)
+    this.entryPath = path.resolve(addSuffix(options.entry))
+    this.modules = new Set()
   }
   build(output) {
     // 获取入口文件对应的模块
@@ -33,11 +34,23 @@ class Bundle {
     return { code: bundle.toString() }
   }
   /**
-   * 根据文件路径获取模块
-   * @param {*} importee 此模块真实的文件路径
+   * 根据文件路径获取模块（创建模块实例）
+   * @param {*} importee 此模块真实的文件路径（被引入的模块） ./msg.js
+   * @param {*} importer 导入此模块的文件路径（引入别的模块的模块） main.js
+   * 从importer中引入importee
    */
-  fetchModule(importee) {
-    const route = importee
+  fetchModule(importee, importer) {
+    let route
+    if (!importer) {
+      // 根路径
+      route = importee
+    } else {
+      if (path.isAbsolute(importee)) {
+        route = importee
+      } else {
+        route = path.resolve(path.dirname(importer), addSuffix(importee))
+      }
+    }
     if (route) {
       const code = fs.readFileSync(route, 'utf8')
       const module = new Module({
@@ -45,6 +58,7 @@ class Bundle {
         path: route,
         bundle: this,
       })
+      this.modules.add(module)
       return module
     }
   }

@@ -5,6 +5,12 @@ function sayHello(prefix) {
 
 sayHello('函数模块')
 
+// const func = () => {
+//   console.log('箭头函数')
+// }
+
+// func()
+
 export const x = 1;
 // console.log('hello')
 // import { name } from './msg'

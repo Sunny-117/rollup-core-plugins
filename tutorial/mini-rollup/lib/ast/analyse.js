@@ -70,6 +70,7 @@ function analyse(ast, code, module) {
         let newScope
         switch (node.type) {
           case 'FunctionDeclaration':
+            // TODO: case 'ArrowFunctionExpression':
             addToScope(node.id.name) // 函数本身也是变量，所以也要加入到当前作用域
             const names = node.params.map(it => it.name); // 函数参数名
             // 遇到函数声明，创建新的函数作用域

@@ -1,4 +1,4 @@
-// import { name as name1, age } from './msg'
+// import { name as name1, age } from './msg' // TODO bugfix
 import { name, age } from './msg'
 function sayHello(prefix) {
   console.log('hello', name, prefix)

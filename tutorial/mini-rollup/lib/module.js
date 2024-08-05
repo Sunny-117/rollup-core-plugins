@@ -25,6 +25,12 @@ class Module {
   expandAllStatements() {
     let allStatements = []
     this.ast.body.forEach(statement => {
+      /**
+       * 忽略import声明
+       */
+      if (statement.type === 'ImportDeclaration') {
+        return
+      }
       let statements = this.expandStatement(statement)
       allStatements.push(...statements)
     })

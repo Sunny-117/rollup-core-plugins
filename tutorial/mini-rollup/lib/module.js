@@ -16,6 +16,8 @@ class Module {
     this.imports = {}
     // 本模块内导出了哪些变量
     this.exports = {}
+    // 存放变量修改语句
+    this.modifications = {}
     // 存放本模块顶级变量的定义语句是哪条
     this.definitions = {}
     analyse(this.ast, this.code, this);
@@ -51,6 +53,20 @@ class Module {
     })
     result.push(statement)
     console.log('result->', result)
+    // 还要找到此语句定义的变量，把此变量对应的修改语句也包括进来
+    const defines = Object.keys(statement._defines)
+    defines.forEach(name => {
+      const modifications = hasOwnProperty(this.modifications, name) && this.modifications[name]
+      if (modifications) {
+        modifications.forEach(modification => {
+          if (!modification._included) {
+            let statement = this.expandStatement(modification)
+            result.push(...statement)
+          }
+        })
+      }
+    })
+
     return result
   }
   define(name) {
@@ -65,7 +81,7 @@ class Module {
     } else {
       // 函数内自己声明的
       const statement = this.definitions[name] // 此变量的定义语句
-      if (statement && !statement._included) {
+      if (statement && !statement._included) { // 防止重复导入
         return this.expandStatement(statement)
       }
       return []

@@ -1,5 +1,6 @@
 const walk = require('./walk')
 const Scope = require('./scope')
+const { hasOwnProperty } = require('../utils')
 
 function analyse(ast, code, module) {
   /**
@@ -10,7 +11,8 @@ function analyse(ast, code, module) {
       _module: { value: module }, // 这个语句自己的模块
       _source: { value: code.snip(statement.start, statement.end) }, // 这个语句自己的源码
       _included: { value: false, writable: true }, // 默认不包括在output结果中
-      _defines: { value: {} },
+      _defines: { value: {} }, // 定义了哪些变量
+      _modifies: { value: {} }, // 这个语句修改了哪些变量
       _dependsOn: { value: {} } // 这个语句所依赖的变量
     })
     console.log(statement.type)
@@ -61,12 +63,34 @@ function analyse(ast, code, module) {
         module.definitions[name] = statement;//此顶级变量的定义语句就是这条语句
       }
     }
+    function checkForReads(node) {
+      if (node.type === 'Identifier') {
+        // 当前这个语句依赖了node.name变量
+        statement._dependsOn[node.name] = true
+      }
+    }
+    function checkForWrites(node) {
+      function addNode(node,) {
+        const { name } = node;
+        statement._modifies[name] = true
+        if (!hasOwnProperty(module.modifications, name)) {
+          module.modifications[name] = []
+        }
+        // 存放此变量所有的修改语句
+        module.modifications[name].push(statement)
+      }
+      if (node.type === 'AssignmentExpression') {
+        // i+=1
+        addNode(node.left)
+      } else if (node.type === 'UpdateExpression') {
+        // i++
+        addNode(node.argument)
+      }
+    }
     walk(statement, {
       enter(node) {
-        if (node.type === 'Identifier') {
-          // 当前这个语句依赖了node.name变量
-          statement._dependsOn[node.name] = true
-        }
+        checkForReads(node)
+        checkForWrites(node)
         let newScope
         switch (node.type) {
           case 'FunctionDeclaration':

@@ -1,5 +1,11 @@
 export const aaaa = 'sunny-117'
-export const age = '20'
+export var modiTest = 'sunny-117'
+export var age = 20
+
+modiTest += '2'
+modiTest += '3'
+
+age++;
 
 const key = 3;
 export { key as kk }

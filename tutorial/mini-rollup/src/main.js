@@ -1,5 +1,6 @@
-import { aaaa as bbbb, age } from './msg'
+import { aaaa as bbbb, age, modiTest } from './msg'
 // import { name, age } from './msg'
+console.log(modiTest)
 function sayHello(prefix) {
   console.log('hello', bbbb, prefix)
 }
@@ -12,7 +13,7 @@ sayHello('函数模块')
 
 // func()
 
-export const x = 1;
+// export const x = 1;
 // console.log('hello')
 // import { name } from './msg'
 // console.log('world')
@@ -20,3 +21,6 @@ export const x = 1;
 
 // import {name} from './msg'
 // console.log('hello ', name)
+
+
+

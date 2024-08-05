@@ -1,7 +1,7 @@
-// import { name as name1, age } from './msg' // TODO bugfix
-import { name, age } from './msg'
+import { aaaa as bbbb, age } from './msg'
+// import { name, age } from './msg'
 function sayHello(prefix) {
-  console.log('hello', name, prefix)
+  console.log('hello', bbbb, prefix)
 }
 
 sayHello('函数模块')

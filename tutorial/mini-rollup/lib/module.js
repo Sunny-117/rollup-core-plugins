@@ -43,7 +43,8 @@ class Module {
       let definitions = this.define(name)
       result.push(...definitions)
     })
-    // result.push(statement)
+    result.push(statement)
+    console.log('result->', result)
     return result
   }
   define(name) {

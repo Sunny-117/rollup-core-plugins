@@ -1,1 +1,2 @@
-console.log('abc')
+import { msg } from './msg.js'
+console.log('abc', msg)

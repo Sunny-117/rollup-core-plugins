@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "node debugger.js"
   },
   "devDependencies": {
     "prettier": "^3.0.2"

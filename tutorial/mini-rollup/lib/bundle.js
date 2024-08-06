@@ -2,7 +2,7 @@ const path = require('node:path')
 const fs = require('node:fs')
 const Module = require('./module')
 const MagicString = require('magic-string')
-const { addSuffix } = require('./utils')
+const { addSuffix, hasOwnProperty, replaceIdentifier } = require('./utils')
 class Bundle {
   constructor(options) {
     // 入口文件绝对路径
@@ -15,6 +15,7 @@ class Bundle {
     // console.log('entryModule:', entryModule)
     this.statements = entryModule.expandAllStatements()
     // console.log('this.statements', this.statements)
+    this.deconflict()
     const { code } = this.generate()
     const outputDir = path.dirname(output);
     if (!fs.existsSync(outputDir)) {
@@ -22,9 +23,40 @@ class Bundle {
     }
     fs.writeFileSync(output, code)
   }
+  deconflict() {
+    const defines = {} // 定义的变量
+    const conflict = {} // 变量名重复的变量
+    this.statements.forEach(statement => {
+      Object.keys(statement._defines).forEach(name => {
+        if (hasOwnProperty(defines, name)) {
+          conflict[name] = true
+        } else {
+          defines[name] = []
+        }
+        defines[name].push(statement._module)
+      })
+    })
+    Object.keys(conflict).forEach(name => {
+      const modules = defines[name]
+      modules.pop() // 最后一个模块不需要重命名，可以保留原有的变量名
+      modules.forEach((module, index) => {
+        let replacement = `${name}${modules.length - index}`
+        module.rename(name, replacement)
+      })
+    });
+
+  }
   generate() {
     let bundle = new MagicString.Bundle()
     this.statements.forEach(statement => {
+      let replacements = {};
+      // 获取依赖的变量和定义的变量
+      Object.keys(statement._dependsOn).concat(Object.keys(statement._defines)).forEach(name => {
+        const canonicalName = statement._module.getCanonicalName(name)
+        if (name !== canonicalName) {
+          replacements[name] = canonicalName
+        }
+      })
       const source = statement._source.clone();
       /**
        * export const name = '123'
@@ -34,6 +66,7 @@ class Bundle {
       if (statement.type === "ExportNamedDeclaration") {
         source.remove(statement.start, statement.declaration.start)
       }
+      replaceIdentifier(statement, source, replacements)
       bundle.addSource({
         content: source,
         separator: '\n'

@@ -22,6 +22,8 @@ class Module {
     this.modifications = {}
     // 存放本模块顶级变量的定义语句是哪条
     this.definitions = {}
+    // 重命名的变量
+    this.canonicalNames = {}
     analyse(this.ast, this.code, this);
     console.log('this.imports', this.imports)
     console.log('this.definitions', this.definitions)
@@ -103,6 +105,12 @@ class Module {
         }
       }
     }
+  }
+  rename(name, replacement) {
+    this.canonicalNames[name] = replacement
+  }
+  getCanonicalName(name) {
+    return this.canonicalNames[name] || name;
   }
 }
 module.exports = Module

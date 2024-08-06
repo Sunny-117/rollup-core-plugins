@@ -9,8 +9,16 @@ class Scope {
     this.parent = options.parent
     //此作用域内定义的变量
     this.names = options.names || []
+    // 这个作用域是不是一个块级作用域
+    this.isBlock = !!options.isBlock
   }
-  add(name) {
+  add(name, isBlockDeclaration) {
+    // 不是块级变量（var），并且当前作用域是块级作用域，则提升
+    if (!isBlockDeclaration && this.isBlock) {
+      this.parent.add(name, isBlockDeclaration)
+    } else {
+      this.names.push(name)
+    }
     this.names.push(name)
   }
   findDefiningScope(name) {

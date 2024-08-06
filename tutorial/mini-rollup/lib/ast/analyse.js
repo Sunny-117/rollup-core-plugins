@@ -56,8 +56,12 @@ function analyse(ast, code, module) {
    */
   let currentScope = new Scope({ name: '模块内的顶级作用域' })
   ast.body.forEach(statement => {
-    function addToScope(name) {
-      currentScope.add(name)
+    /**
+     * @param {*} name 
+     * @param {*} isBlockDeclaration 是否是块级变量
+     */
+    function addToScope(name, isBlockDeclaration) {
+      currentScope.add(name, isBlockDeclaration)
       if (!currentScope.parent) {// 顶级作用域
         statement._defines[name] = true //表示此语句定义了一个顶级变量
         module.definitions[name] = statement;//此顶级变量的定义语句就是这条语句
@@ -98,11 +102,26 @@ function analyse(ast, code, module) {
             addToScope(node.id.name) // 函数本身也是变量，所以也要加入到当前作用域
             const names = node.params.map(it => it.name); // 函数参数名
             // 遇到函数声明，创建新的函数作用域
-            newScope = new Scope({ name: node.id.name, parent: currentScope, names })
+            newScope = new Scope({
+              name: node.id.name,
+              parent: currentScope,
+              names,
+              isBlock: false // 函数声明不是块级作用域
+            })
             break
           case 'VariableDeclaration': // 变量声明
             node.declarations.forEach(declaration => {
-              addToScope(declaration.id.name)
+              if (node.kind === 'let' || node.kind === 'const') {
+                addToScope(declaration.id.name, true)
+              } else {
+                addToScope(declaration.id.name, false)
+              }
+            })
+            break
+          case 'BlockStatement':
+            newScope = new Scope({
+              parent: currentScope,
+              isBlock: true // 块级作用域
             })
             break
           default:

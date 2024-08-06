@@ -3,6 +3,8 @@ const { parse } = require('acorn')
 const analyse = require('./ast/analyse')
 const { hasOwnProperty } = require('./utils')
 
+const SYSTEM_VARS = ['console', 'log']
+
 class Module {
   constructor({ code, path, bundle }) {
     this.code = new MagicString(code)
@@ -31,6 +33,12 @@ class Module {
        * 忽略import声明
        */
       if (statement.type === 'ImportDeclaration') {
+        return
+      }
+      /**
+       * 忽略所有变量声明语句
+       */
+      if (statement.type === 'VariableDeclaration') {
         return
       }
       let statements = this.expandStatement(statement)
@@ -81,10 +89,19 @@ class Module {
     } else {
       // 函数内自己声明的
       const statement = this.definitions[name] // 此变量的定义语句
-      if (statement && !statement._included) { // 防止重复导入
-        return this.expandStatement(statement)
+      if (statement) {
+        if (statement._included) { // 防止重复导入
+          return []
+        } else {
+          return this.expandStatement(statement)
+        }
+      } else {
+        if (SYSTEM_VARS.includes(name)) {
+          return []
+        } else {
+          throw new Error(`变量${name}既没有从外部导入，也没有被定义`)
+        }
       }
-      return []
     }
   }
 }

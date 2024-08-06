@@ -19,7 +19,6 @@ class Scope {
     } else {
       this.names.push(name)
     }
-    this.names.push(name)
   }
   findDefiningScope(name) {
     if (this.names.includes(name)) {

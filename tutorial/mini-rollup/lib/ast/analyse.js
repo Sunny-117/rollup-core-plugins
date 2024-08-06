@@ -62,7 +62,12 @@ function analyse(ast, code, module) {
      */
     function addToScope(name, isBlockDeclaration) {
       currentScope.add(name, isBlockDeclaration)
-      if (!currentScope.parent) {// 顶级作用域
+      /**
+       * 1. 没有parent，则提升
+       * 2. 块级作用域但不是块级声明，则提升
+       */
+      // ! currentScope.parent啥时候应该被赋值
+      if (!currentScope.parent || (currentScope.isBlock && !isBlockDeclaration)) {// 顶级作用域
         statement._defines[name] = true //表示此语句定义了一个顶级变量
         module.definitions[name] = statement;//此顶级变量的定义语句就是这条语句
       }
@@ -112,9 +117,10 @@ function analyse(ast, code, module) {
           case 'VariableDeclaration': // 变量声明
             node.declarations.forEach(declaration => {
               if (node.kind === 'let' || node.kind === 'const') {
+                debugger
                 addToScope(declaration.id.name, true)
               } else {
-                addToScope(declaration.id.name, false)
+                addToScope(declaration.id.name)
               }
             })
             break

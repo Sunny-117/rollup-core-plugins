@@ -43,8 +43,8 @@ class Bundle {
   }
   /**
    * 根据文件路径获取模块（创建模块实例）
-   * @param {*} importee 此模块真实的文件路径（被引入的模块） ./msg.js
-   * @param {*} importer 导入此模块的文件路径（引入别的模块的模块） main.js
+   * @param {*} importee 此模块真实的文件路径（被引入的模块） ./msg.js 被调用者
+   * @param {*} importer 导入此模块的文件路径（引入别的模块的模块） main.js 调用者
    * 从importer中引入importee
    */
   fetchModule(importee, importer) {

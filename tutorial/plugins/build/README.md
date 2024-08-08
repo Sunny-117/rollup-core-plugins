@@ -68,7 +68,7 @@ Next Hook: moduleParsed 一旦文件被处理和解析，模块就会被解析
 ## shouldTransformCachedModule
 
 
-Type: ({id, code, ast, resoledSources, moduleSideEffects, syntheticNamedExports) => boolean
+Type: ({id, code, ast, resoledSources, moduleSideEffects, syntheticNamedExports}) => boolean
 
 Kind: async, first
 
@@ -80,3 +80,38 @@ Next Hook: moduleParsed if no plugin returns true, otherwise transform .
 - 为了防止这种情况，丢弃缓存的副本，而是转换一个模块，插件可以实现这个钩子并返回true。
 - 这个钩子还可以用来找出缓存了哪些模块，并访问它们缓存的元信息
 - 如果一个插件没有返回true，Rollup将触发其他插件的这个钩子，否则将跳过所有剩余的插件。
+
+
+## moduleParsed
+
+Type: (moduleInfo: ModuleInfo) => void
+
+Kind: async, parallel
+
+Previous Hook: transform 转换当前处理的文件的位置
+Next Hook: resolveId 和 resolveDynamicImport 并行解析所有发现的静态和动态导入（如果存在），否则buildEnd
+
+- 每当模块被 Rollup 完全解析时，就会调用这个钩子。看看 this.getModuleInfo 了解传递给这个钩子的信息
+- 与 transform 钩子不同，这个钩子从不缓存，可以用来获取缓存模块和其他模块的信息，包括元属性的最终形状、代码和ast
+
+## resolveDynamicImport 解析动态导入
+
+Type: (specifier, importer) => string
+Kind: async, first
+Previous Hook: moduleParsed 已为导入文件分配模块
+Next Hook: load 如果钩子使用尚未加载的id ,如果动态导入包含字符串且钩子未解析，请加载 resolveId ，否则为 buildEnd
+
+- 为动态导入定义自定义解析程序
+- 返回 false 表明导入应该保持原样，而不是传递给其他解析程序，从而使其成为外部的
+- 与 resolveId 钩子类似，还可以返回一个对象，将导入解析为不同的id，同时将其标记为外部
+- 如果动态导入被传递一个字符串作为参数，那么从这个钩子返回的字符串将被解释为一个现有的模块id，而返回null将推迟到其它解析器resolveId
+
+## buildEnd
+
+Type：(error) => void
+Kind：async, parallel
+Previous Hook：moduleParsed, resolveId or resolveDynamicImport.
+Next Hook：outputOptions 输出生成阶段的输出，因为这是构建阶段的最后一个挂钩
+
+- 在 rollup 完成打包时调用，但在调用 generate 或 write 之前调用；你也可以返回一个 Promise
+- 如果在构建过程中发生错误，则会将其传递给此钩子

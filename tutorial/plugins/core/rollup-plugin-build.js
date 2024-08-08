@@ -20,6 +20,7 @@ function build() {
       console.log('buildStart')
     },
     async resolveId(source, importer) {
+      console.log('resolveId被执行了')
       if (source === 'virtual') {
         console.log('resolveId', source)
         //如果resolveId钩子有返回值了，那么就会跳过后面的查找逻辑，以此返回值作为最终的模块ID
@@ -34,7 +35,7 @@ function build() {
       }
     },
     async shouldTransformCachedModule({ id, code, ast }) {
-      console.log('shouldTransformCachedModule')
+      console.log('shouldTransformCachedModule') // 需要通过热更新测试
       //不使用缓存，再次进行转换
       return true
     },
@@ -46,6 +47,8 @@ function build() {
     },
     async resolveDynamicImport(specifier, importer) {
       console.log('resolveDynamicImport', specifier, importer)
+      // 如果返回了id，则不会执行resolveId钩子
+      // return {id: '/Users/fuzhiqiang/Desktop/rollup-core-plugins/tutorial/plugins/src/msg.js'}
     },
     async buildEnd() {
       console.log('buildEnd')

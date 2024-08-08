@@ -5,12 +5,12 @@ import injectPolyfillPlugin from './build/plugin-polyfill-core.js'
 import Babel from './build/rollup-plugin-babel.js'
 
 export default defineConfig({
-  input: './src/index.js',
+  input: './src/index2.js',
   output: {
     dir: 'dist',
   },
   plugins: [
-    // build()
+    build()
     // buildStart()
     // injectPolyfillPlugin()
     // Babel({

@@ -1,4 +1,5 @@
 import { createFilter } from 'rollup-pluginutils'
+import {pick} from 'lodash-es'
 import babel from '@babel/core'
 
 function Babel(options = {}) {
@@ -8,11 +9,13 @@ function Babel(options = {}) {
   const filter = id => extensionRegExp.test(id) && userDefinedFilter(id);
   return {
     name: 'babel-plugin',
+    /**
+     * 类似webpack loader
+     */
     async transform(code, id) {
-      if (!filter(id)) return null;
-      let result = await babel.transformAsync(code, {
-        presets: ['@babel/preset-env']
-      });
+      console.log('id=', id)
+      // if (!filter(id)) return null; // TODO: 有点问题
+      let result = await babel.transformAsync(code, pick(options, 'presets'));
       return result
     }
   }

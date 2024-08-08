@@ -13,6 +13,12 @@ export default defineConfig({
     // build()
     // buildStart()
     // injectPolyfillPlugin()
-    Babel()
+    // Babel({
+    //   include: './src',
+    //   extensions: ['.js', '.jsx'],
+    //   presets: [
+    //     "@babel/preset-env"
+    //   ]
+    // })
   ],
 })

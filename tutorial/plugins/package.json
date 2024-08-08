@@ -14,5 +14,8 @@
     "@rollup/plugin-babel": "^6.0.4",
     "rollup": "^4.20.0",
     "rollup-pluginutils": "^2.8.2"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
   }
 }

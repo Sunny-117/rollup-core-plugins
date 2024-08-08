@@ -64,3 +64,19 @@ Next Hook: moduleParsed 一旦文件被处理和解析，模块就会被解析
 - 这个钩子可以选择性地返回 {code，AST，map} 对象
 - ast必须是标准的ESTree ast，每个节点都有 start 和 end 属性
 - 如果转换不移动代码，可以通过将map设置为null来保留现有的sourcemaps。否则，您可能需要生成源映射。请参阅关于源代码转换的部分
+
+## shouldTransformCachedModule
+
+
+Type: ({id, code, ast, resoledSources, moduleSideEffects, syntheticNamedExports) => boolean
+
+Kind: async, first
+
+Previous Hook: load 加载缓存文件以将其代码与缓存版本进行比较的位置
+
+Next Hook: moduleParsed if no plugin returns true, otherwise transform .
+
+- 如果使用了 Rollup 缓存（例如，在监视模式下或通过JavaScript API显式使用），如果在加载钩子之后，加载的代码与缓存副本的代码相同，则Rollup将跳过模块的转换钩子
+- 为了防止这种情况，丢弃缓存的副本，而是转换一个模块，插件可以实现这个钩子并返回true。
+- 这个钩子还可以用来找出缓存了哪些模块，并访问它们缓存的元信息
+- 如果一个插件没有返回true，Rollup将触发其他插件的这个钩子，否则将跳过所有剩余的插件。

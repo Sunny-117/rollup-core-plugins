@@ -3,6 +3,8 @@ import build from './core/rollup-plugin-build.js'
 import buildStart from './build/plugin-buildStart.js'
 import injectPolyfillPlugin from './build/plugin-polyfill-core.js'
 import Babel from './build/rollup-plugin-babel.js'
+import generation from './output/rollup-plugin-generation.js'
+import dynamicImportPolyfillPlugin from './output/rollup-plugin-renderDynamicImport.js'
 
 export default defineConfig({
   input: './src/index2.js',
@@ -10,7 +12,7 @@ export default defineConfig({
     dir: 'dist',
   },
   plugins: [
-    build()
+    // build()
     // buildStart()
     // injectPolyfillPlugin()
     // Babel({
@@ -20,5 +22,7 @@ export default defineConfig({
     //     "@babel/preset-env"
     //   ]
     // })
+    // generation()
+    dynamicImportPolyfillPlugin()
   ],
 })

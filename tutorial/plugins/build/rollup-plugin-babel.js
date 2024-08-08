@@ -8,8 +8,8 @@ function Babel(options = {}) {
   const filter = id => extensionRegExp.test(id) && userDefinedFilter(id);
   return {
     name: 'babel-plugin',
-    async transform(code, filename) {
-      if (!filter(filename)) return null;
+    async transform(code, id) {
+      if (!filter(id)) return null;
       let result = await babel.transformAsync(code, {
         presets: ['@babel/preset-env']
       });

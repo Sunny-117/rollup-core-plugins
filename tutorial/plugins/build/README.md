@@ -33,3 +33,34 @@ import { foo } from '../bar.js'
 - 例如，您可以将其用作为入口点定义自定义代理模块的机制。以下插件将代理所有入口点以注入 polyfill 导入
 - 返回 null 将遵循其他 resolveId 函数，最终遵循默认的解析行
 - 返回 false 信号，表示源应被视为 外部模块 ，不包括在 bundle 中 `
+
+## load
+
+Type: (id) => string
+
+Kind: async, first
+
+Previous Hook: 解析加载id的 resolveId 或 resolveDynamicImport 。此外，这个钩子可以在任何时候从插件钩子中通过调用 this.load 来触发预加载与id对应的模块
+
+Next Hook: transform 可在未使用缓存或没有使用相同代码的缓存副本时转换加载的文件，否则应使用 TransformCachedModule
+
+- 定义自定义加载程序
+- 返回 null 会推迟到其他加载函数（最终是从文件系统加载的默认行为）
+- 为了防止额外的解析开销，例如这个钩子已经使用了这个。parse出于某种原因，为了生成AST，这个钩子可以选择性地返回 {code，AST，map} 对象。 ast 必须是标准的 ESTree ast ，每个节点都有开始和结束属性。如果转换不移动代码，可以通过将map设置为null来保留现有的sourcemaps。否则，您可能需要生成源映射。请参阅关于源代码转换的部分
+
+## transform
+
+
+Type: (code, id) => string
+
+Kind: async, sequential
+
+Previous Hook: load 当前处理的文件的位置。如果使用了缓存，并且有该模块的缓存副本，那么如果插件为该钩子返回true，则应 shouldTransformCachedModule
+
+Next Hook: moduleParsed 一旦文件被处理和解析，模块就会被解析
+
+- 可用于转换单个模块
+- 为了防止额外的解析开销，例如这个钩子已经使用了 this.parse 出于某种原因，为了生成AST
+- 这个钩子可以选择性地返回 {code，AST，map} 对象
+- ast必须是标准的ESTree ast，每个节点都有 start 和 end 属性
+- 如果转换不移动代码，可以通过将map设置为null来保留现有的sourcemaps。否则，您可能需要生成源映射。请参阅关于源代码转换的部分

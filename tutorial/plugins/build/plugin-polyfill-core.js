@@ -22,7 +22,7 @@ export default function injectPolyfillPlugin() {
         //在代理的加载钩子中，我们需要知道入口是否有默认导出
         //然而，在那里，我们不再有完整的“解析”对象，它可能包含来自其他插件的元数据，这些插件只在第一次加载时添加
         //仅在第一次加载时添加。因此我们在这里触发加载。
-        const moduleInfo = await this.load(resolution);
+        const moduleInfo = await this.load(resolution); // 此处的load内部会调用下面的load钩子，两者不完全一样
         //我们需要确保即使对于treeshake来说，原始入口点的副作用也得到了考虑。moduleSideEffects:false。所以调用load方法，此处不写也行
         //moduleSideEffects是ModuleInfo上的一个可写属性
         moduleInfo.moduleSideEffects = true;
@@ -33,6 +33,7 @@ export default function injectPolyfillPlugin() {
       return null;
     },
     load(id) {
+      console.log(id, '-----------------------')
       if (id === POLYFILL_ID) {
         // 替换为实际的polyfill import '@babel/polyfill'
         return "import '@babel/polyfill'";

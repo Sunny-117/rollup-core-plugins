@@ -13,6 +13,7 @@ export default function injectPolyfillPlugin() {
         return { id: POLYFILL_ID, moduleSideEffects: true };
       }
       if (options.isEntry) {
+        // 默认rollup只认识相对,绝对路径，不认识第三方node_modules路径
         //确定实际的入口是什么。我们需要skipSelf来避免无限循环。
         const resolution = await this.resolve(source, importer, { skipSelf: true, ...options });
         //如果它无法解决或是外部的，只需返回它，这样Rollup就可以显示错误
@@ -33,7 +34,7 @@ export default function injectPolyfillPlugin() {
     load(id) {
       if (id === POLYFILL_ID) {
         // 替换为实际的polyfill import '@babel/polyfill'
-        return "console.log('polyfill');";
+        return "import '@babel/polyfill'";
       }
       if (id.endsWith(PROXY_SUFFIX)) {
         const entryId = id.slice(0, -PROXY_SUFFIX.length);
@@ -46,9 +47,31 @@ export default function injectPolyfillPlugin() {
         if (hasDefaultExport) {
           code += `export { default } from ${JSON.stringify(entryId)};`;
         }
+        // 如果load钩子又返回值了，就不走后面的load钩子了。类似webpack loader pitch
         return code;
       }
       return null;
     }
   };
 }
+
+// resolve原理：拿到source所在目录，然后拼接上importer
+/**
+
+function resolve(source, importer, options) {
+  const plugins =[{resolveId: ()=>'xxx'}, {resolveId: ()=>'yyy'}]
+  let resolution;
+  for (let i = 0; i < plugins.length; i++) {
+  if(options.skipSelf&&plugins[i].name==='plugin1') continue;
+    const resolveId = plugins[i].resolveId;
+    if(resolveId) {
+      resolution = resolveId(source, importer, options);
+      if(resolution){
+        return resolution
+      }
+    }
+  }
+  return {id: path.resolve(path.dirname(importer), source)}
+}
+
+ */

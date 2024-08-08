@@ -1,7 +1,7 @@
 import { defineConfig } from 'rollup'
 import build from './core/rollup-plugin-build.js'
 import buildStart from './build/plugin-buildStart.js'
-import injectPolyfillPlugin from './build/plugin-polyfill.js'
+import injectPolyfillPlugin from './build/plugin-polyfill-core.js'
 
 export default defineConfig({
   input: './src/index.js',

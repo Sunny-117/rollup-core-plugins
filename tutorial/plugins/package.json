@@ -9,6 +9,6 @@
     "dev": "node debugger.js"
   },
   "devDependencies": {
-    "prettier": "^3.0.2"
+    "rollup": "^4.20.0"
   }
 }

@@ -7,6 +7,7 @@ export default function injectPolyfillPlugin() {
   return {
     name: 'inject-polyfill',
     async resolveId(source, importer, options) {
+      console.log({source, importer, isEntry: options.isEntry})
       if (source === POLYFILL_ID) {
         //重要的是，对于polyfills，应始终考虑副作用
         //否则，使用`treeshake.moduleSideEffects:false`可能会阻止包含polyfill
@@ -22,7 +23,7 @@ export default function injectPolyfillPlugin() {
         //然而，在那里，我们不再有完整的“解析”对象，它可能包含来自其他插件的元数据，这些插件只在第一次加载时添加
         //仅在第一次加载时添加。因此我们在这里触发加载。
         const moduleInfo = await this.load(resolution);
-        //我们需要确保即使对于treeshake来说，原始入口点的副作用也得到了考虑。moduleSideEffects:false。
+        //我们需要确保即使对于treeshake来说，原始入口点的副作用也得到了考虑。moduleSideEffects:false。所以调用load方法，此处不写也行
         //moduleSideEffects是ModuleInfo上的一个可写属性
         moduleInfo.moduleSideEffects = true;
         //重要的是，新入口不能以\0开头，并且与原始入口具有相同的目录，以免扰乱相对外部导入的生成
@@ -47,6 +48,7 @@ export default function injectPolyfillPlugin() {
         if (hasDefaultExport) {
           code += `export { default } from ${JSON.stringify(entryId)};`;
         }
+        console.log("code=", code)
         // 如果load钩子又返回值了，就不走后面的load钩子了。类似webpack loader pitch
         return code;
       }

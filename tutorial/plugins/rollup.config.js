@@ -7,11 +7,13 @@ import generation from './output/rollup-plugin-generation.js'
 import dynamicImportPolyfillPlugin from './output/rollup-plugin-renderDynamicImport.js'
 import resolveFileUrl from './output/rollup-plugin-resolveFileUrl.js'
 import html from './output/rollup-plugin-html.js'
+// import resolve from '@rollup/plugin-node-resolve'
+import resolve from './core/rollup-plugin-node-resolve.js'
 // import commonjs from '@rollup/plugin-commonjs'
-import commonjs from './core/rollup-plugin-commonjs.js'
+// import commonjs from './core/rollup-plugin-commonjs.js
 
 export default defineConfig({
-  input: './src/index4.js',
+  input: './src/index6.js',
   output: {
     dir: 'dist',
   },
@@ -30,6 +32,7 @@ export default defineConfig({
     // dynamicImportPolyfillPlugin()
     // resolveFileUrl()
     // html()
-    commonjs()
+    // commonjs()
+    resolve()
   ],
 })

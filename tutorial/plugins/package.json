@@ -19,6 +19,7 @@
     "rollup-pluginutils": "^2.8.2"
   },
   "dependencies": {
+    "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "dedent": "^1.5.3",
     "estree-walker": "^3.0.3",

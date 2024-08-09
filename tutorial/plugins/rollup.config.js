@@ -11,6 +11,7 @@ import html from './output/rollup-plugin-html.js'
 import resolve from './core/rollup-plugin-node-resolve.js'
 // import commonjs from '@rollup/plugin-commonjs'
 // import commonjs from './core/rollup-plugin-commonjs.js
+import alias from './core/rollup-plugin-alias.js';
 
 export default defineConfig({
   input: './src/index6.js',
@@ -33,6 +34,14 @@ export default defineConfig({
     // resolveFileUrl()
     // html()
     // commonjs()
-    resolve()
+    // resolve()
+    alias({
+      entries: [
+        { find: './xx.js', replacement: 'check-is-array' }
+      ]
+    }),
   ],
+  watch: {
+    clearScreen: false
+  }
 })

@@ -17,6 +17,7 @@
     "rollup-pluginutils": "^2.8.2"
   },
   "dependencies": {
+    "dedent": "^1.5.3",
     "lodash-es": "^4.17.21"
   }
 }

@@ -5,9 +5,10 @@ import injectPolyfillPlugin from './build/plugin-polyfill-core.js'
 import Babel from './build/rollup-plugin-babel.js'
 import generation from './output/rollup-plugin-generation.js'
 import dynamicImportPolyfillPlugin from './output/rollup-plugin-renderDynamicImport.js'
+import resolveFileUrl from './output/rollup-plugin-resolveFileUrl.js'
 
 export default defineConfig({
-  input: './src/index2.js',
+  input: './src/index3.js',
   output: {
     dir: 'dist',
   },
@@ -23,6 +24,7 @@ export default defineConfig({
     //   ]
     // })
     // generation()
-    dynamicImportPolyfillPlugin()
+    // dynamicImportPolyfillPlugin()
+    resolveFileUrl()
   ],
 })

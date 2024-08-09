@@ -6,6 +6,7 @@ import Babel from './build/rollup-plugin-babel.js'
 import generation from './output/rollup-plugin-generation.js'
 import dynamicImportPolyfillPlugin from './output/rollup-plugin-renderDynamicImport.js'
 import resolveFileUrl from './output/rollup-plugin-resolveFileUrl.js'
+import html from './output/rollup-plugin-html.js'
 
 export default defineConfig({
   input: './src/index3.js',
@@ -25,6 +26,7 @@ export default defineConfig({
     // })
     // generation()
     // dynamicImportPolyfillPlugin()
-    resolveFileUrl()
+    // resolveFileUrl()
+    html()
   ],
 })

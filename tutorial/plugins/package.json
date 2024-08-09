@@ -17,7 +17,10 @@
     "rollup-pluginutils": "^2.8.2"
   },
   "dependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
     "dedent": "^1.5.3",
-    "lodash-es": "^4.17.21"
+    "estree-walker": "^3.0.3",
+    "lodash-es": "^4.17.21",
+    "magic-string": "^0.30.11"
   }
 }

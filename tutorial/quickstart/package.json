@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup --config --silent --prod",
-    "dev": "rollup --config rollup.config.dev.js -w"
+    "dev": "rollup --config rollup.config.dev.js -w",
+    "base": "rollup --config rollup.config.base.js"
   },
   "dependencies": {
     "@rollup/plugin-html": "^1.0.3",

@@ -225,3 +225,22 @@ export default function replace(options = {}) {
   }
 }
 ```
+
+# ts
+
+babel编译ts语法，不做类型校验
+tsc校验+编译
+
+# @rollup/plugin-eslint
+
+build过程中生效对eslint的检查
+
+# @rollup/plugin-image
+
+解析图片
+
+# @rollup/plugin-strip（不推荐）
+
+删除全局作用域的所有的console.log和仅console.log的变量
+
+# @rollup/plugin-wasm

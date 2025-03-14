@@ -1,0 +1,16 @@
+{
+  "name": "rollup-defect-chunks",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "npm run build && node dist/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/pluginutils": "^5.0.4",
+    "rollup": "^3.29.3"
+  }
+}

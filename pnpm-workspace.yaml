@@ -3,3 +3,4 @@ packages:
   - playground
   - tutorial/*
   - defect/*
+  - app/*

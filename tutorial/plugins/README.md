@@ -16,6 +16,8 @@
 ## 常用插件
 
 ```
+rollup-plugin-vue 看下插件源码
+rollup-plugin-react
 @rollup/plugin-babel
 @rollup/plugin-commonjs
 @rollup/plugin-node-resolve
